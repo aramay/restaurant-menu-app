@@ -30,26 +30,49 @@
         <div class="row row-content" ng-controller="menuContoller as menuCtrl">
 
             <div class="col-xs-12">
-               <ul class="media-list">
-                  <!-- ng-repeat directive to iterate over array of JS objects -->
-                  <li class="media" ng-repeat="dish in menuCtrl.dishes">
-                     <div class="media-left media-middle">
-                        <a href="#">
-                           <img class="media-object img-thumbnail"
-                           ng-src={{dish.image}} alt="Uthappizza">
-                        </a>
-                     </div>
-                     <div class="media-body">
-                        <h2 class="media-heading">{{dish.name}}
-                           <span class="label label-danger">{{dish.label}}</span>
-                           <span class="badge">{{dish.price | currency}}</span></h2>
-                           <p>{{dish.description}}</p>
-                           <p>Comment: {{dish.comment}}</p>
-                           <p>Type your comment:
-                              <input type="text" ng-model="dish.comment"></p>
-                     </div>
-                  </li>
+               <!-- tabs to filter menu items -->
+               <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" ng-class="{active:menuCtrl.isSelected(1)}">
+                    <a ng-click="menuCtrl.select(1)"
+                     aria-controls="all menu"
+                     role="tab">The Menu</a></li>
+                    <li role="presentation" ng-class="{active:menuCtrl.isSelected(2)}">
+                    <a ng-click="menuCtrl.select(2)"
+                     aria-controls="appetizers"
+                     role="tab">Appetizers</a></li>
+                    <li role="presentation" ng-class="{active:menuCtrl.isSelected(3)}">
+                    <a ng-click="menuCtrl.select(3)"
+                     aria-controls="mains"
+                     role="tab">Mains</a></li>
+                    <li role="presentation" ng-class="{active:menuCtrl.isSelected(4)}">
+                    <a ng-click="menuCtrl.select(4)"
+                     aria-controls="desserts"
+                     role="tab">Desserts</a></li>
                 </ul>
+
+               <div class="tab-content">
+
+                  <ul class="media-list tab-pane fade in active">
+                     <!-- ng-repeat directive to iterate over array of JS objects -->
+                     <li class="media" ng-repeat="dish in menuCtrl.dishes | filter:menuCtrl.filtText">
+                        <div class="media-left media-middle">
+                           <a href="#">
+                              <img class="media-object img-thumbnail"
+                              ng-src={{dish.image}} alt="Uthappizza">
+                           </a>
+                        </div>
+                        <div class="media-body">
+                           <h2 class="media-heading">{{dish.name}}
+                              <span class="label label-danger">{{dish.label}}</span>
+                              <span class="badge">{{dish.price | currency}}</span></h2>
+                              <p>{{dish.description}}</p>
+                              <p>Comment: {{dish.comment}}</p>
+                              <p>Type your comment:
+                                 <input type="text" ng-model="dish.comment"></p>
+                              </div>
+                           </li>
+                        </ul>
+               </div>
             </div>
         </div>
     </div>
@@ -61,6 +84,9 @@
       var app = angular.module('confusionApp',[]);
 
       app.controller('menuContoller', function(){
+
+         this.tab = 1;
+
          var dishes=[
          {
            name:'Uthapizza',
@@ -101,6 +127,30 @@
      ];
 
      this.dishes = dishes;
+     this.filtText = "";
+
+   //   function to set tab
+     this.select = function(setTab){
+        console.log(setTab)
+        this.tab = setTab;
+
+        if (setTab === 2)
+           this.filtText = "appetizer";
+         else if (setTab === 3)
+            this.filtText = "mains";
+
+         else if (setTab === 4)
+            this.filtText = "dessert";
+         else
+            this.filtText = "";
+     }
+
+   //   check which tab is selected
+     this.isSelected = function(checkTab){
+        console.log(checkTab);
+        console.log(this.tab === checkTab);
+        return (this.tab === checkTab);
+     }
 
       });
 
